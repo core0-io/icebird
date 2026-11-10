@@ -23,3 +23,15 @@ describe('avroRead from test files', () => {
     })
   })
 })
+
+describe('avroRead without an avro.codec header', () => {
+  it('treats the data as uncompressed', async () => {
+    const file = await asyncBufferFromFile('test/files/' + fs.readdirSync('test/files').find(f => f.endsWith('.avro')))
+    const buffer = await file.slice(0)
+    const reader = { view: new DataView(buffer), offset: 0 }
+    const { metadata, syncMarker } = await avroMetadata(reader)
+    if (metadata['avro.codec'] === 'deflate') return
+    delete metadata['avro.codec']
+    expect(await avroRead({ reader, metadata, syncMarker })).toBeDefined()
+  })
+})

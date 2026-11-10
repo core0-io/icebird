@@ -37,7 +37,7 @@ export function avroRead({ reader, metadata, syncMarker }) {
         throw new Error('sync marker does not match')
       }
     }
-    const codec = metadata['avro.codec']
+    const codec = metadata['avro.codec'] ?? 'null'
 
     // De-compress data
     if (codec === 'deflate') {
